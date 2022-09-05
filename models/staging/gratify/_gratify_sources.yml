@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: gratify
+    database: mds-course
+    schema: datalake
+    tables:
+
+      - name: log
+        description: One row per logging event.
+
+      - name: songs
+        description: One row per song.

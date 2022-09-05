@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: stg_gratify__log
+    description: One row per logged event in gratify's streaming service
+    columns:
+
+      - name: created_at
+        description: Timestamp of the events creation
+        tests:
+          - not_null
+
+  - name: stg_gratify__songs
+    description: One row per songs available in gratify's streaming service's
+    columns:
+
+        - name: track_id
+          description: Primary key of the songs table
+          tests:
+            - unique
+            - not_null

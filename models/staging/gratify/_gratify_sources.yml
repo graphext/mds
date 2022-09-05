@@ -11,3 +11,10 @@ sources:
 
       - name: songs
         description: One row per song.
+        columns:
+
+          - name: track_id
+            description: Primary key of the songs table
+            tests:
+              - unique
+              - not_null

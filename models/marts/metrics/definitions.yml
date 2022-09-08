@@ -1,0 +1,21 @@
+version: 2
+
+metrics:
+  - name: song_plays
+    label: Song Plays
+    model: ref('int_events')
+    description: "The number of song plays"
+
+    type: count
+    sql: event_id
+
+    timestamp: created_at
+    time_grains: [day, week, month]
+
+    filters:
+      - field: page
+        operator: '='
+        value: "'NextSong'"
+
+    meta:
+      team: Finance

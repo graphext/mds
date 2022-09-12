@@ -1,0 +1,27 @@
+version: 2
+
+metrics:
+  - name: active_users
+    label: Active Users
+    model: ref('int_events')
+    description: "The number of users creating song plays"
+
+    type: count_distinct
+    sql: user_id
+
+    timestamp: created_at
+    time_grains: [day, week, month]
+
+    dimensions:
+      - level
+
+    filters:
+      - field: user_id
+        operator: 'is'
+        value: "not null"
+      - field: page
+        operator: '='
+        value: "'NextSong'"
+
+    meta:
+      team: Finance

@@ -12,6 +12,9 @@ metrics:
     timestamp: created_at
     time_grains: [day, week, month]
 
+    dimensions:
+      - level
+
     filters:
       - field: page
         operator: '='

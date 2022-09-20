@@ -8,7 +8,12 @@ final as (
     select 
         ts as created_at,
         userId as user_id,
-        sessionId as session_id,
+        sessionId as session_id_aux,
+        -- create a new session_id as the concat of user_id and session_id, since there are some repeated session number codes for several users
+        case
+            when userId is not null then concat(userId,'-',sessionId)
+            else cast(sessionId as string)
+        end as session_id,
         page,
         auth,
         method,

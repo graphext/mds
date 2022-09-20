@@ -10,7 +10,8 @@ artists_normalized as (
         max(artist_mbid) as artist_mbid,
         max(artist_name) as name,
         max(artist_familiarity) as familiarity,
-        max(artist_hotttnesss) as hotness
+        max(artist_hotttnesss) as hotness,
+        count(*) as num_songs
     from songs_artists
     group by 1
 )

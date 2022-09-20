@@ -1,6 +1,6 @@
 select *
 from {{ metrics.calculate(
-    metric('song_plays'),
+    metric('active_users'),
     grain='day',
     dimensions=['level'],
 ) }}

@@ -17,9 +17,14 @@ events as (
         method,
         status,
         level,
+        user_agent,
+        -- Extract the device from the user agent
+        regexp_extract(regexp_extract(user_agent, r'^(.*?);'), r' \((.*)') as device,
         location,
-        user_agent
+        split(location)[SAFE_OFFSET (0)] as city,
+        split(location)[SAFE_OFFSET (1)] as state
     from log
+    order by created_at desc
 )
 
 select * from events

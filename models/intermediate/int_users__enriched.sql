@@ -8,6 +8,10 @@ events as (
     select * from {{ ref('int_events') }}
 ),
 
+events_no_cancel as (
+    select * from {{ ref('int_events') }} where lower(page) not like '%cancel%'
+),
+
 sessions as (
     select * from {{ ref('int_sessions') }}
 ),
@@ -78,6 +82,16 @@ users_log_enriched as (
     order by 1
 ),
 
+users_events_no_cancel as (
+    select
+        users.user_id,
+        count(distinct events_no_cancel.page) as num_unique_events_no_cancel
+    from users
+    left join events_no_cancel using (user_id)
+    group by 1
+    order by 1
+),
+
 users_events_enriched as (
     select
         users.user_id,
@@ -118,7 +132,8 @@ users_events_enriched as (
         max(device) as device,
         max(city) as city,
         max(state) as state,
-        max(timestamp_diff(created_at, registered_at, day)) as days_since_registration
+        max(timestamp_diff(created_at, registered_at, day)) as days_since_registration_last_event,
+        max(timestamp_diff(current_timestamp(), registered_at, day)) as days_since_registration
     from users
     left join events using (user_id)
     group by 1
@@ -142,11 +157,13 @@ final as (
         user_id,
         num_events,
         num_unique_events,
+        num_unique_events_no_cancel,
         num_sessions,
         device,
         city,
         state,
         days_since_registration,
+        days_since_registration_last_event,
         num_played_songs,
         num_unique_played_songs,
         num_unique_artists,
@@ -200,6 +217,7 @@ final as (
     left join users_log_enriched using (user_id)
     left join songs_per_artist using (user_id)
     left join songs_per_session using (user_id)
+    left join users_events_no_cancel using (user_id)
     order by 1
 )
 

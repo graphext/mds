@@ -20,8 +20,8 @@ artists as (
     select * from {{ ref('int_artists') }}
 ),
 
-log as (
-    select * from {{ ref('stg_gratify__log') }}
+played_tracks as (
+    select * from {{ ref('int_played_tracks') }}
 ),
 
 songs_per_artist as (
@@ -40,8 +40,8 @@ songs_per_artist as (
             max(familiarity) as familiarity,
             max(hotness) as hotness,
             count(*) as num_songs
-        from log
-        left join artists on log.artist_name = artists.name
+        from played_tracks
+        left join artists on played_tracks.artist_name = artists.name
         where page = 'NextSong'
         group by user_id, artist_name
         order by 1
@@ -69,15 +69,15 @@ songs_per_session as (
     order by 1
 ),
 
-users_log_enriched as (
+users_played_tracks_enriched as (
     select
-        log.user_id,
+        played_tracks.user_id,
         count(distinct artist_name) as num_unique_artists,
         count(distinct song_title) as num_unique_played_songs,
         round(sum(song_length), 2) as sum_all_played_song_length,
         round(avg(song_length), 2) as avg_song_length,
         round(stddev(song_length), 2) as std_song_length
-    from log
+    from played_tracks
     group by 1
     order by 1
 ),
@@ -214,7 +214,7 @@ final as (
     from users
     left join users_events_enriched using (user_id)
     left join users_sessions_enriched using (user_id)
-    left join users_log_enriched using (user_id)
+    left join users_played_tracks_enriched using (user_id)
     left join songs_per_artist using (user_id)
     left join songs_per_session using (user_id)
     left join users_events_no_cancel using (user_id)

@@ -9,11 +9,11 @@ users as (
 ),
 
 users_enriched as (
-    select * from {{ ref('int_users__enriched') }}
+    select * from {{ ref('users_enriched') }}
 ),
 
 users_churn as (
-    select * from {{ ref('int_users_churn') }}
+    select * from {{ ref('users_churn') }}
 ),
 
 final as (
